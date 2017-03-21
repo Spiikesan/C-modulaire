@@ -4,7 +4,7 @@
 # include "new.h"
 
 /*
-** To correctly work with foreach, the container must be in the form :
+** To correctly work with foreach, the container must be like :
 ** struct s_<container>
 ** {
 **   t_object	__obj__;

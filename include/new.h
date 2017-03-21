@@ -14,9 +14,6 @@ typedef struct	s_object	t_object;
 typedef void	(*del_func)(void *ptr);
 typedef void	(*str_func)(t_object *o);
 
-# define(toto) (is_multiline; \
-		multiline)
-
 typedef struct	s_object_init
 {
   size_t	obj_size;

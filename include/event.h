@@ -2,7 +2,7 @@
 # define EVENT_H_
 
 /*
-** You have to inherits from that struct to get a
+** You have to inherits from that structure to get a
 ** functionnal event system.
 ** example :
 ** struct event_test

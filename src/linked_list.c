@@ -22,13 +22,6 @@ static inline t_ll_elem	*_make_elem(void *elem)
   return (e);
 }
 
-/*
-** Link element b in next of elem a
-** b->next = a->next
-** b->prev = a
-** a->next = b
-** b->next->prev = b
-*/
 static inline void	_link_elems(t_ll_elem *a, t_ll_elem *b)
 {
   b->next = a->next;
