@@ -2,7 +2,26 @@
 Exemple d'implémentation de C modulaire en principe objet, avec quelques éléments de base
 
 
-Disclaimer:
+Ce répertoire contient mon travail sur le C modulaire :
+* new/delete
+* objets de base (vectors, lists, maps, buffers circulaires...)
+* objets avancés (connexion tcp serveur/client, thread/mutexes)
+* des utilitaires tels que le get_opt (gestion des paramètres passés au binaire), le splited (simple string split qui génère un tableau de char * selon un délimiteur fourni (espace par défaut))
+* il y a aussi une gestion d'exception basée sur des macros et des objets (exception_handler, event_exception, exception)
+* un très basique Event manager
+* ansi qu'un garbage collector basique
+* Et sûrement d'autres que j'oublie
+
+
+Le tout est (normalement) compatible Linux/Windows
+
+
+Le lambda n'est utilisable qu'avec GCC (fonctions imbriquées)
+
+
+## Disclaimer:
+
+
 THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESSED OR IMPLIED WARRANTIES,
 INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
 FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS
