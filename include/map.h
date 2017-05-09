@@ -38,6 +38,7 @@
 ** Utilisé pour le new (initialisation).
 ** La fonction de comparaison est obligatoire, même si la map
 ** est une unordered map. (nécéssaire pour check keys)
+** defVal is the default value.
 */
 typedef struct	s_map_init
 {
@@ -58,9 +59,9 @@ typedef struct	s_map
 
 t_map	*t_map_new(t_map_init var);
 void	map_del(void *ptr);
-size_t	map_size(t_map *m);
+size_t	map_size(const t_map *m);
 int	map_add(t_map *m, void *key, void *value);
-int	map_remove(t_map *m, void *key);
-void	*map_get(t_map *m, void *key);
+int	map_remove(t_map *m, const void *key);
+void	*map_get(const t_map *m, const void *key);
 
 #endif /* !MAP_H_ */

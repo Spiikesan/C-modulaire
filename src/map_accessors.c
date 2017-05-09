@@ -1,11 +1,11 @@
 #include "map.h"
 
-size_t	map_size(t_map *m)
+size_t	map_size(const t_map *m)
 {
   return (m->size);
 }
 
-void		*map_get(t_map *m, void *key)
+void		*map_get(const t_map *m, const void *key)
 {
   size_t	i;
 

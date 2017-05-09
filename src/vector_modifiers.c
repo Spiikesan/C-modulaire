@@ -51,7 +51,7 @@ int	vector_pop_back(t_vector *v)
     {
       v->alloc = v->size + 1;
       if ((v->array = realloc(v->array,
-				 (v->alloc) * sizeof(void *))) == NULL)
+			      (v->alloc) * sizeof(void *))) == NULL)
 	return (VEC_FUNC);
     }
   return (VEC_NOERR);

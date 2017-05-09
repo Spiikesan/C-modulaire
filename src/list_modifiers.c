@@ -64,3 +64,14 @@ int		list_remove(t_list *l, size_t index)
     }
   return (LIST_NOERR);
 }
+
+t_list		*list_clone(const t_list *l)
+{
+  t_list	*n;
+
+  n = new(t_list, l->size);
+  n->size = l->size;
+  n->alloc = l->alloc;
+  memcpy(n->array, l->array, l->size * sizeof(void *));
+  return (n);
+}

@@ -30,8 +30,6 @@
 
 /*
 ** Utilisé pour le new (initialisation).
-** La fonction de comparaison est obligatoire, même si la list
-** est une unordered list. (nécéssaire pour check keys)
 */
 typedef struct	s_list_init
 {
@@ -48,9 +46,11 @@ typedef struct	s_list
 
 t_list	*t_list_new(t_list_init var);
 void	list_del(void *ptr);
-size_t	list_size(t_list *l);
+size_t	list_size(const t_list *l);
 int	list_add(t_list *l, void *value, size_t index);
 int	list_remove(t_list *l, size_t index);
-void	*list_get(t_list *l, size_t index);
+size_t	list_search_index(const t_list *m, const void *search);
+void	*list_get(const t_list *l, const size_t index);
+t_list	*list_clone(const t_list *l);
 
 #endif /* !LIST_H_ */

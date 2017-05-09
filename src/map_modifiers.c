@@ -69,7 +69,7 @@ int		map_add(t_map *m, void *key, void *value)
   return (MAP_NOERR);
 }
 
-int		map_remove(t_map *m, void *key)
+int		map_remove(t_map *m, const void *key)
 {
   size_t	i;
   int		found;
