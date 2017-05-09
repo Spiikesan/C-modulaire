@@ -2,13 +2,13 @@
 Exemple d'implémentation de C modulaire en principe objet, avec quelques éléments de base
 
 
-Ce répertoire contient mon travail sur le C modulaire :
+Ce répertoire contient quelques éléments de mon travail sur le C modulaire :
 * new/delete
 * objets de base (vectors, lists, maps, buffers circulaires...)
 * objets avancés (connexion tcp serveur/client, thread/mutexes)
 * des utilitaires tels que le get_opt (gestion des paramètres passés au binaire), le splited (simple string split qui génère un vector de char * selon un délimiteur fourni (espace par défaut))
-* il y a aussi une gestion d'exception basée sur des macros et des objets (exception_handler, event_exception, exception)
-* un très basique Event manager
+* il y a aussi une gestion d'exception basée sur des macros et des objets (exception_handler, event_exception, exception) => voir exemple
+* un Event manager (observable) => voir exemples
 * ansi qu'un garbage collector basique
 * Et sûrement d'autres que j'oublie
 
