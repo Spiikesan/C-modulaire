@@ -43,6 +43,15 @@ void	_delete(t_object *obj)
   free(obj);
 }
 
+
+/*
+** reg/unreg modified to have a FIFO system
+** so that the first pushed element
+** will be the first deleted by the
+** GC, so even if it's delete elements
+** himself, the GC will not double-delete
+** them (they cannot be before the element)
+*/
 void	_reg_object(t_object *obj)
 {
   if (!obj)
@@ -52,10 +61,11 @@ void	_reg_object(t_object *obj)
     obj->prev = obj->next;
     new_front = obj;
   }else{
-    obj->next = new_front;
-    obj->prev = new_front->prev;
+    obj->next = new_front->next;
+    obj->prev = new_front;
     obj->next->prev = obj;
     obj->prev->next = obj;
+    new_front = obj;
   }
 }
 
@@ -68,6 +78,7 @@ void	_unreg_object(t_object *obj)
   } else {
     obj->prev->next = obj->next;
     obj->next->prev = obj->prev;
-    new_front = obj->next;
+    if (new_front == obj)
+      new_front = obj->next;
   }
 }
