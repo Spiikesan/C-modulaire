@@ -5,6 +5,8 @@
 
 typedef struct	s_ll_elem	t_ll_elem;
 
+# define MAGIC_t_linked_list DEFAULT_MAGIC
+
 struct		s_ll_elem
 {
   t_ll_elem	*next;

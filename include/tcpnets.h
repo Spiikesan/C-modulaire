@@ -16,6 +16,8 @@ typedef struct in_addr IN_ADDR;
 
 # include "new.h"
 
+# define MAGIC_t_tcpnets DEFAULT_MAGIC
+
 typedef struct	s_tcpnets_init
 {
   int		port;

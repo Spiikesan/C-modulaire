@@ -11,6 +11,8 @@
 */
 # include "new.h"
 
+# define MAGIC_t_circularBuff DEFAULT_MAGIC
+
 /*
 ** Defines de retours.
 */

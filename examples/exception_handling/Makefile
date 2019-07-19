@@ -2,7 +2,7 @@ NAME	= exception
 
 CC	= gcc
 
-CFLAGS	+= -W -Wall -Werror -Wextra -rdynamic -I../../include
+CFLAGS	+= -W -Wall -Wextra -I../../include -Wno-missing-field-initializers
 
 RM	= rm -f
 

@@ -2,20 +2,21 @@
 #include <errno.h>
 #include <stdio.h>
 #include "observable_list.h"
+#include "foreach.h"
 
 void	get_callback(t_event_args arg)
 {
-  printf("%s: args = %lu\n", __FUNCTION__, *((size_t *)arg));
+  printf("%s: args = %lu\n", __FUNCTION__, *((long unsigned int *)arg));
 }
 
 void	add_callback(t_event_args arg)
 {
-  printf("%s: args->first = %s, args->second = %lu\n", __FUNCTION__, ((char *)((t_pair *)arg)->first), *((size_t *)((t_pair *)arg)->second));
+  printf("%s: args->first = %s, args->second = %lu\n", __FUNCTION__, ((char *)((t_pair *)arg)->first), *((long unsigned int *)((t_pair *)arg)->second));
 }
 
 void	remove_callback(t_event_args arg)
 {
-  printf("%s: args = %lu\n", __FUNCTION__, *((size_t *)arg));
+  printf("%s: args = %lu\n", __FUNCTION__, *((long unsigned int *)arg));
 }
 
 int main()
@@ -38,6 +39,12 @@ int main()
   printf("j'insert a l'index 1 : 'phrase 2'\n");
   OLPUT(ol, "phrase 2", 1);
 
+  printf("Taille de la liste : %lu\n", (long unsigned int)ol->list.size);
+
+  FOREACH(char *, ph, ol,
+	  printf("FOREACH: %s\n", ph);
+  );
+
   printf("je recup a l'index 1 : %s\n", OLGET(char *, ol, 1));
 
   printf("je supprime à l'index 2\n");
@@ -47,7 +54,7 @@ int main()
   printf("je supprime à l'index 0\n");
   OLPOP(ol, 0);
 
-  printf("Taille de la liste : %lu\n", ol->list.size);
+  printf("Taille de la liste : %lu\n", (long unsigned int)ol->list.size);
 
   //Not necessary (presence of a garbage collector)
   delete(ol);

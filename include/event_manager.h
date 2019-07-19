@@ -16,6 +16,8 @@
 typedef void *t_event_args;
 typedef void (*t_event_handler)(t_event_args args);
 
+# define MAGIC_t_event_manager DEFAULT_MAGIC
+
 /*
 ** direct == true(1) => events are directly processed
 ** direct == false(0) => need to run process_events function

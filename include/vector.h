@@ -21,6 +21,8 @@
 */
 # define VEC_MAX_DIFF	(8)
 
+# define MAGIC_t_vector DEFAULT_MAGIC
+
 /*
 ** Defines de retours.
 */

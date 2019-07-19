@@ -18,6 +18,8 @@
 */
 # define OBSERVABLE_LIST_MAX_DIFF	LIST_MAX_DIFF
 
+# define MAGIC_t_observable_list DEFAULT_MAGIC
+
 /*
 ** Defines de retours.
 */

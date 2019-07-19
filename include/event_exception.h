@@ -4,6 +4,8 @@
 # include <setjmp.h>
 # include "new.h"
 
+# define MAGIC_EventException DEFAULT_MAGIC
+
 typedef struct	s_EventException
 {
   t_object	__obj__;

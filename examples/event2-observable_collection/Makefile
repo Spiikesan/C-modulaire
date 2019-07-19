@@ -1,8 +1,8 @@
-NAME	= events
+NAME	= events2
 
 CC	= gcc
 
-CFLAGS	+= -W -Wall -Wextra -I../../include -std=gnu99 -g3
+CFLAGS	+= -W -Wall -Wextra -I../../include -std=gnu99 -g3 -Wno-missing-field-initializers
 
 RM	= rm -f
 

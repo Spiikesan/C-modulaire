@@ -7,6 +7,8 @@
 /* compile with -rdynamic to get the symbols names*/
 #define MAX_BT 200
 
+# define MAGIC_Exception DEFAULT_MAGIC
+
 typedef struct	s_Exception
 {
   t_object	base;

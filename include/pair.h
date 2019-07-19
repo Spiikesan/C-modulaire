@@ -3,6 +3,8 @@
 
 # include "new.h"
 
+# define MAGIC_t_pair DEFAULT_MAGIC
+
 typedef struct	s_pair_init
 {
   void		*first;

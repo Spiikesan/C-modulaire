@@ -16,6 +16,8 @@ typedef struct in_addr IN_ADDR;
 
 # include "new.h"
 
+# define MAGIC_t_tcpnetc DEFAULT_MAGIC
+
 typedef struct	s_tcpnetc_init
 {
   char		*host;

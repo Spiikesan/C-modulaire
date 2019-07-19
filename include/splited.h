@@ -4,6 +4,8 @@
 # include "new.h"
 # include "vector.h"
 
+# define MAGIC_t_splited DEFAULT_MAGIC
+
 typedef struct	s_splited_init
 {
   char		*str;

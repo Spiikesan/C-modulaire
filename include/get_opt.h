@@ -15,6 +15,8 @@
 # define OPT_MANDAT	(6)
 # define OPT_OPTERROR	(7)
 
+# define MAGIC_t_getopt DEFAULT_MAGIC
+
 typedef enum
   {
     OPTION,

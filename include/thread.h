@@ -3,19 +3,13 @@
 
 # ifdef __linux__
 #  include <pthread.h>
-# elif _WIN32
-#  include <windows.h>
-# endif
-
-# include "new.h"
-
-# ifdef __linux__
 
 typedef pthread_t	t_cthread;
 typedef void		*t_cth_ret;
 typedef void		*t_cth_params;
 
 # elif _WIN32
+#  include <windows.h>
 
 typedef struct	s_cthread
 {
@@ -26,7 +20,12 @@ typedef struct	s_cthread
 typedef DWORD t_cth_ret;
 typedef LPVOID t_cth_params;
 
+
 # endif
+
+# include "new.h"
+
+# define MAGIC_t_thread DEFAULT_MAGIC
 
 typedef struct	s_thread_init
 {

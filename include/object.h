@@ -9,6 +9,17 @@
 # define OBJ(x) ((t_object *)(x))
 
 /*
+** Check if given pointer is an object using magic
+*/
+# define IS_OBJ(x) ((x) && OBJ(x)->magic.obj == OBJECT_MAGIC)
+
+/*
+** Get type magic
+*/
+# define OBJ_MAGIC(x) (OBJ(x)->magic.type)
+
+
+/*
 ** Get the name
 */
 # define OBJ_NAME(x) (get_object_name(OBJ(x)))

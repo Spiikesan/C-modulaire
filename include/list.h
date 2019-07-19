@@ -16,6 +16,8 @@
 */
 # define LIST_MAX_DIFF	(8)
 
+# define MAGIC_t_list DEFAULT_MAGIC
+
 /*
 ** Defines de retours.
 */

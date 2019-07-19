@@ -9,6 +9,8 @@
 
 #define JMP_BUFF_INIT	(jmp_buff)({{{0}, 0, {{0}}}})
 
+# define MAGIC_ExceptionHandler DEFAULT_MAGIC
+
 /* Max number of levels of exceptions */
 #define MAX_EX 10
 

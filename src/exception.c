@@ -2,12 +2,15 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#ifdef __linux__
 #include <execinfo.h>
+#endif
 #include "raise.h"
 #include "exception.h"
 
 static char	*get_stack_trace()
 {
+#ifdef __linux__
   void		*buffer[MAX_BT];
   char		**strings;
   char		*sstrace;
@@ -29,6 +32,9 @@ static char	*get_stack_trace()
   }
   free(strings);
   return (sstrace);
+#else
+  return "Stack trace not available.";
+#endif
 }
 
 static void	Exception_del(void *ptr)
@@ -68,6 +74,6 @@ char const	*Exception_to_string(t_object *this)
   len = 36 + strlen(self->msg) + strlen(self->file) + 11 + strlen(self->stack);
   if ((self->buffer = malloc(len)) == NULL)
     raise("Out of memory");
-  snprintf(self->buffer, len, "Exception occured !\nFILE: %s: LINE: %lu; %s\n%s", self->file, self->line, self->msg, self->stack);
+  snprintf(self->buffer, len, "Exception occured !\nFILE: %s: LINE: %lu; %s\n%s", self->file, (unsigned long)self->line, self->msg, self->stack);
   return (self->buffer);
 }

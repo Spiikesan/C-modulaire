@@ -2,7 +2,7 @@ NAME	= events
 
 CC	= gcc
 
-CFLAGS	+= -W -Wall -Wextra -I../../include -std=gnu99 -DEVENT_SINGLETON -g3
+CFLAGS	+= -W -Wall -Wextra -I../../include -std=gnu99 -DEVENT_SINGLETON -g3 -Wno-missing-field-initializers
 
 RM	= rm -f
 

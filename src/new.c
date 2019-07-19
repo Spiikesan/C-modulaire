@@ -14,7 +14,7 @@ t_object	*t_object_new(t_object_init var)
   t_object	*new;
   static char	first = 1;
 
-  if (!var.obj_size)
+  if (!var.obj_size || var.type_magic == 0)
     return (NULL);
   if ((new = malloc(var.obj_size)) == NULL)
     return (NULL);
@@ -23,10 +23,12 @@ t_object	*t_object_new(t_object_init var)
     {
       atexit(clean_at_exit);
       first = 0;
-    }
-  new->__delete__ = var.del;
-  new->__name__ = var.name;
-  new->__to_str__ = var.str;
+    };
+  new->magic.obj = OBJECT_MAGIC;
+  new->magic.type = var.type_magic;
+  new->del = var.del;
+  new->name = var.name;
+  new->to_str = var.str;
   new->next = NULL;
   new->prev = NULL;
   _reg_object(new);
@@ -37,8 +39,8 @@ void	_delete(t_object *obj)
 {
   if (!obj)
     return ;
-  if (obj->__delete__)
-    obj->__delete__(obj);
+  if (obj->del)
+    obj->del(obj);
   _unreg_object(obj);
   free(obj);
 }
