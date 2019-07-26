@@ -9,7 +9,7 @@
 /*
 ** new/delete
 */
-# include "new.h"
+# include "object.h"
 
 /*
 ** Define de configuration

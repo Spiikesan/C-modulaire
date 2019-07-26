@@ -3,7 +3,7 @@
 #include "event_manager.h"
 #include "foreach.h"
 
-void t_event_delete(void *ptr)
+void t_event_delete(t_object *ptr)
 {
 	t_event_manager	*man;
 
@@ -36,23 +36,24 @@ int	str_compar(const void *a, const void *b)
 	return (strcmp((char *)a, (char *)b));
 }
 
-t_event_manager			*t_event_manager_new(t_event_manager_init var)
+CMETA_STRUCT_BUILD(t_event_manager_DEFINITION)
 {
-#ifdef	EVENT_SINGLETON
-	static t_event_manager	*em = NULL;
-
-	if (em != NULL)
-		return (em);
+#ifdef EVENT_SINGLETON
+	static t_event_manager *obj = NULL;
+	if (obj != NULL)
+		return obj;
 #else
-	t_event_manager		*em;
+	t_event_manager *obj = NULL;
 #endif
-	if ((em = newObject(t_event_manager, t_event_delete)) == NULL ||
-			(em->events = new(t_map, str_compar)) == NULL)
-		return (NULL);
-	if ((em->events_raised = new(t_list)) == NULL)
-		return (NULL);
-	em->is_direct = var.direct;
-	return (em);
+	obj = newObject(t_event_manager, t_event_delete);
+	if (obj) {
+		obj->direct = args.direct;
+		obj->events = new(t_map, str_compar);
+		obj->events_raised = new(t_list);
+		if (obj->events == NULL || obj->events_raised == NULL)
+			delete(obj);
+	}
+	return obj;
 }
 
 static int	_attach_handler(t_event_manager *em, const char *event_name,
@@ -133,7 +134,7 @@ static int	_raise_event(t_event_manager *em, const char *event_name,
 	// Push the event at the end of the list
 	if (LPUT(em->events_raised, p, em->events_raised->size) != LIST_NOERR)
 		return (EM_NOMEM);
-	if (em->is_direct)
+	if (em->direct)
 		_process_events(em);
 	return (EM_NOERR);
 }
@@ -161,7 +162,7 @@ void	process_events()
 
 	if ((em = new(t_event_manager)) == NULL)
 		return ;
-	if (em->is_direct)
+	if (em->direct)
 		fprintf(stderr, "Warning: calling process_event() is useless if event_manager is in direct mode.\n");
 	_process_events(em);
 }

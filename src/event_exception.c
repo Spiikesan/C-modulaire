@@ -1,6 +1,7 @@
 #include "event_exception.h"
+#include <stdlib.h>
 
-static void EventException_del(void *this)
+static void EventException_del(t_object *this)
 {
   EventException *self = this;
 

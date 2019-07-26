@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "pair.h"
 
 t_pair		*t_pair_new(t_pair_init var)

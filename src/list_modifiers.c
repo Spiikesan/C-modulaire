@@ -1,7 +1,7 @@
 #include <string.h>
 #include "list.h"
 
-void	list_del(void *ptr)
+void	list_del(t_object *ptr)
 {
   t_list	*l;
 

@@ -1,7 +1,7 @@
 #ifndef EVENT_MANAGER_H_
 # define EVENT_MANAGER_H_
 
-# include "new.h"
+# include "object.h"
 # include "map.h"
 # include "list.h"
 
@@ -15,17 +15,13 @@
 
 typedef void *t_event_args;
 typedef void (*t_event_handler)(t_event_args args);
-
-# define MAGIC_t_event_manager DEFAULT_MAGIC
+typedef t_map *t_pmap;
+typedef t_list *t_plist;
 
 /*
 ** direct == true(1) => events are directly processed
 ** direct == false(0) => need to run process_events function
 */
-typedef struct	s_event_manager_init
-{
-  int		direct;
-}		t_event_manager_init;
 
 /*
 ** This struct contains
@@ -35,19 +31,13 @@ typedef struct	s_event_manager_init
 ** first = t_list of callbacks,
 ** second = the t_event_args
 */
-typedef struct		s_event_manager
-{
-  t_object		__obj__;
-  int			is_direct;
-  t_map			*events;
-  t_list		*events_raised;
-}			t_event_manager;
+# define t_event_manager_DEFINITION \
+		t_event_manager,			\
+		(int,		direct),		\
+		(t_pmap,	events),		\
+		(t_plist,	events_raised)
 
-/*
-** Need to be called at least once (even in singleton mode,
-** to set the 'direct' behaviour)
-*/
-t_event_manager	*t_event_manager_new(t_event_manager_init var);
+CMETA_STRUCT_DEF(t_event_manager_DEFINITION);
 
 # ifdef EVENT_SINGLETON
 

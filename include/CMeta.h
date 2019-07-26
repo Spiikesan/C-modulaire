@@ -2,7 +2,8 @@
 # define _CMETA_H_
 
 # include <stddef.h>
-# include "new.h"
+
+//# include "new.h"
 
 /**
  * Defines a structure containing metadata.
@@ -11,25 +12,17 @@
  *
  * #define MY_STRUCT_DEF my_struct_t, (type, memname)
  *
- * The combination ", (type, memname)" can be extended up to 8 individual members, where 'type' are C types and 'memname' are the members names.
+ * The combination ", (type, memname)" can be extended up to 32 individual members, where 'type' are C types and 'memname' are the members names.
  *
  * Then, you have to call the following macro IN A .H to build the definition of the structure wich
  * contain a pointer to the meta structure :
  *
- * Currently unsupported features :
- *  - fixed arrays declared with '[' _num_ ']'.
- *  - function pointers.
+ * Function pointers are like classic pointers.
+ * To be able to use function pointers, arrays, or any other type that can not be written in one word, you must typedef it to have
+ * a one word type.
  */
 #define CMETA_STRUCT_DEF(...) CMETA_STRUCT_DEF_(__VA_ARGS__)
 
-/**
- * You must include this magic number to your own to let the CMeta library
- * recognize your object.
- * For example :
- * #define MAGIC_myType (CMETA_MAGIC + DEFAULT_MAGIC)
- */
-#define CMETA_MAGIC (0xFECA0000U)
-#define MAGIC_myType (CMETA_MAGIC + DEFAULT_MAGIC)
 /*
  * get the meta structure name
  */
@@ -46,8 +39,28 @@
 
 /**
  * You must call this macro with the previous #define MY_STRUCT_DEF as parameter IN A .C file to build the constant metadata structure.
+ * After that, you MUST open brackets to implements the _new function.
+ * The function implementation can be as simple as:
+ * CMETA_STRUCT_BUILD(MY_STRUCT_DEF) {
+ * 		return newObject(t_myType);
+ * }
+ *
+ * If your t_myType_init structure is not empty, you can use "args" parameter:
+
+ * CMETA_STRUCT_BUILD(MY_STRUCT_DEF) {
+ * 		t_myType *obj = newObject(t_myType);
+ * 		... checks ...
+ * 		obj->someMember = args.someMemberValue;
+ * 		return obj;
+ * }
+ *
+ * You may use DEFAULT_BUILD(MY_STRUCT_DEF) to build it automatically :
+ *  - All members will be set from init structure
+ *  - Neither func_del nor func_str functions will be set
  */
 #define CMETA_STRUCT_BUILD(...) CMETA_STRUCT_BUILD_(__VA_ARGS__)
+
+#define CMETA_DEFAULT_BUILD(...) CMETA_DEFAULT_BUILD_(__VA_ARGS__)
 
 /**
  * Init metadata structure by assigning &CMETA(my_struct) to te meta member.
@@ -64,7 +77,7 @@
  * The meta struct pointer given indicates if the given member is the actual value returned
  * by the function.
  */
-#define CMETA_READ(type, ptr, memname, metatype) cmeta_read_cmeta_##type(ptr, memname, metatype)
+#define CMETA_READ(type, ptr, memname, metatype) cmeta_read_##type((const t_object *)ptr, memname, metatype)
 
 /**
  * Set a value based on the member name.
@@ -74,35 +87,35 @@
  * 2 - Error, the member don't have the given type
  * -1 - Error, a parameter is incorrect (NULL ptr/memname, or ptr not a cmeta compatible pointer)
  */
-#define CMETA_SET(type, ptr, memname, value) cmeta_set_cmeta_##type(ptr, memname, value)
+#define CMETA_SET(type, ptr, memname, value) cmeta_set_##type((t_object *)ptr, memname, value)
 
 /**
  * Types.
  * You MUST use these types. For example, to use a char * in a struct,
- * you must set "pchar" as a type.
+ * you must set "pChar" as a type.
  * If you want to define your own, it must be a typedef, as it MUST be
  * a one-word type.
  */
 #define CMETA_TYPE1(type, name, pname) typedef type name, *pname
-#define CMETA_TYPE(type, name) CMETA_TYPE1(type, CMETA(name), CMETA(CONCATENATE(p, name)))
+#define CMETA_TYPE(type, name) CMETA_TYPE1(type, name, CONCATENATE(p, name))
 
-CMETA_TYPE(char,        char);
-CMETA_TYPE(short,       short);
-CMETA_TYPE(int,         int);
-CMETA_TYPE(long,        long);
-CMETA_TYPE(long long,   longlong);
+CMETA_TYPE(char,        Char);
+CMETA_TYPE(short,       Short);
+CMETA_TYPE(int,         Int);
+CMETA_TYPE(long,        Long);
+CMETA_TYPE(long long,   Longlong);
 
-CMETA_TYPE(unsigned char,        uchar);
-CMETA_TYPE(unsigned short,       ushort);
-CMETA_TYPE(unsigned int,         uint);
-CMETA_TYPE(unsigned long,        ulong);
-CMETA_TYPE(unsigned long long,   ulonglong);
+CMETA_TYPE(unsigned char,        uChar);
+CMETA_TYPE(unsigned short,       uShort);
+CMETA_TYPE(unsigned int,         uInt);
+CMETA_TYPE(unsigned long,        uLong);
+CMETA_TYPE(unsigned long long,   uLonglong);
 
-CMETA_TYPE(float,       float);
-CMETA_TYPE(double,      double);
-CMETA_TYPE(long double, longdouble);
+CMETA_TYPE(float,       Float);
+CMETA_TYPE(double,      Double);
+CMETA_TYPE(long double, Longdouble);
 
-typedef void   *cmeta_pointer;
+typedef void   *Pointer;
 
 /**
  * All the 27 default types of CMETA library.
@@ -114,20 +127,20 @@ typedef void   *cmeta_pointer;
  * these types to read/write them from CMETA structures.
  */
 #define CMETA_ALL_TYPES         \
-    char,       pchar,          \
-    short,      pshort,         \
-    int,        pint,           \
-    long,       plong,          \
-    longlong,   plonglong,      \
-    uchar,      puchar,         \
-    ushort,     pushort,        \
-    uint,       puint,          \
-    ulong,      pulong,         \
-    ulonglong,  pulonglong,     \
-    float,      pfloat,         \
-    double,     pdouble,        \
-    longdouble, plongdouble,    \
-                pointer
+    Char,       pChar,          \
+    Short,      pShort,         \
+    Int,        pInt,           \
+    Long,       pLong,          \
+    Longlong,   pLonglong,      \
+    uChar,      puChar,         \
+    uShort,     puShort,        \
+    uInt,       puInt,          \
+    uLong,      puLong,         \
+    uLonglong,  puLonglong,     \
+    Float,      pFloat,         \
+    Double,     pDouble,        \
+    Longdouble, pLongdouble,    \
+                Pointer
 
 /**
  * Member definition.
@@ -150,6 +163,7 @@ struct  meta_type {
  * @members[]: Each members of the structure
  */
 struct meta_struct {
+	const char *name;
     const unsigned int memCount;
     const struct meta_type const members[];
 };
@@ -160,18 +174,10 @@ struct linked_meta {
 };
 
 /**
- *  Get meta structure in the given ptr :
- *      - If the given pointer is a pointer on a meta structure, then it isn't changed and the function returns 0
- *      - If it's a pointer on a datastructure, the pointer is set to the contained meta structure and the function returns 1
- *      - If no meta is found, the *ptr is set to NULL and the function returns -1.
- */
-int cmeta_get_meta(const struct meta_struct **meta);
-
-/**
- * Debug purpose : Show the meta structure of the given struct pointer.
+ * Debug purpose : Show the meta structure of the given object pointer.
  * Can be a meta structure pointer, or a data structure pointer built with CMETA_STRUCT_BUILD and initiated with CMETA_INIT
  */
-void    cmeta_print_types(const void *ptr);
+void    cmeta_print_types(const t_object *ptr);
 
 /**
  * Debug purpose : Show the meta structure of all the registered symbols.
@@ -237,12 +243,17 @@ extern const char * const cmeta_type_print_associations[][2];
 #define PARAMERISE(a, b) a, b
 #define DEPLOY(a, x) a x
 
-#define CMETA_TYPE_DEF(type, name)  CMETA(type) name;
+#define CMETA_TYPE_DEF(type, name)  type name;
 #define CMETA_TYPE_DEF_(_, params)  DEPLOY(CMETA_TYPE_DEF, params) //_ == unused
 
-#define CMETA_TYPE_BUILD1(st, type, name) { #name, STRINGIZE(type), sizeof(CMETA(type)), offsetof(st, name) },
+#define CMETA_TYPE_BUILD1(st, type, name) { #name, STRINGIZE(type), sizeof(type), offsetof(st, name) },
 #define CMETA_TYPE_BUILD1_(type, params) CMETA_TYPE_BUILD1(type, params)
 #define CMETA_TYPE_BUILD1__(type, params) CMETA_TYPE_BUILD1_(type, DEPLOY(PARAMERISE, params))
+
+#define CMETA_INIT_BUILD(_, name)  obj->name = args.name;\
+
+#define CMETA_INIT_BUILD_(_, params)  DEPLOY(CMETA_INIT_BUILD, params) //_ == unused
+
 
 /*
  * This function is used in place of addSymbol function
@@ -251,22 +262,26 @@ extern const char * const cmeta_type_print_associations[][2];
 void cmeta_do_nothing();
 
 /*
- * Define metadata structure (USE IN .H)
+ * Define metadata structure (USED IN .H)
  */
 #define CMETA_STRUCT_DEF_(name, ...)	        \
 typedef struct {                                \
 	t_object	base;							\
-    const struct meta_struct *meta;       		\
     FOR_EACH(CMETA_TYPE_DEF_, , __VA_ARGS__  )  \
 } name;                                         \
+typedef struct {                                \
+    FOR_EACH(CMETA_TYPE_DEF_, , __VA_ARGS__  )  \
+} name##_init;                                  \
 extern const struct meta_struct CMETA(name);    \
-extern void    (*cmeta_##name##_addSymbol)();
+extern void    (*cmeta_##name##_addSymbol)();	\
+name	*name##_new(name##_init args)
 
 /**
- * Build metadata global variable structure (USE IN .C)
+ * Build metadata global variable structure (USED IN .C)
  */
 #define CMETA_STRUCT_BUILD_(name, ...)              \
 const struct meta_struct CMETA(name) = {            \
+	#name,											\
     FOR_EACH_NARG(__VA_ARGS__),                     \
     { FOR_EACH(CMETA_TYPE_BUILD1__, name, __VA_ARGS__) }    \
 };                                                  \
@@ -279,33 +294,49 @@ static void    cmeta_##name##_addSymbol_do()        \
     cmeta_metastructures = &metalink_##name;        \
     cmeta_##name##_addSymbol = &cmeta_do_nothing;   \
 }                                                   \
-void (*cmeta_##name##_addSymbol)() = cmeta_##name##_addSymbol_do;
+void (*cmeta_##name##_addSymbol)() = cmeta_##name##_addSymbol_do; \
+name	*name##_new(name##_init args)
+
+#define CMETA_DEFAULT_BUILD_(name, ...)             \
+{										            \
+	name *obj = newObject(name);					\
+	if (obj) {										\
+		FOR_EACH(CMETA_INIT_BUILD_, _, __VA_ARGS__) \
+    } 												\
+    return (obj);									\
+}
+
+#define CMETA_FUNC_READ_DEC(_, T)\
+T cmeta_read_##T(const t_object *obj, const char *memname, const struct meta_type **metatype);\
 
 /**
  * Function definition for getting a value based on the member name
  */
-#define CMETA_FUNC_READ_DEF(d, T)\
-CMETA(T) CMETA_READ(T, const void *ptr, const char *memname, const struct meta_type **metatype) {\
+#define CMETA_FUNC_READ_DEF(_, T)\
+T cmeta_read_##T(const t_object *obj, const char *memname, const struct meta_type **metatype) {\
     unsigned int i;\
-    const struct meta_struct *meta = (const struct meta_struct *)ptr;\
-    if (ptr && memname && cmeta_get_meta(&meta) == 1) {\
-        for (i = 0; i < meta->memCount; i++) {\
-            if (!strcmp(meta->members[i].name, memname)) {\
-                if (!strcmp(meta->members[i].type, #T)) {\
+    if (obj && memname) {\
+        for (i = 0; i < obj->meta->memCount; i++) {\
+            if (strcmp(obj->meta->members[i].name, memname) == 0) {\
+                if (strcmp(obj->meta->members[i].type, #T) == 0) {\
                     if (metatype)\
-                        *metatype = &meta->members[i];\
-                    return *((CMETA(T) *)(((char *)ptr) + meta->members[i].offset));\
+                        *metatype = &obj->meta->members[i];\
+                    return *((T *)(((char *)obj) + obj->meta->members[i].offset));\
                 }\
             }\
         }\
     }\
     if (metatype)\
         *metatype = NULL;\
-    return (CMETA(T))0;\
+    return (T)0;\
 }
 
 #define CMETA_FUNC_READ_ASSOC_DEF(d, T)\
-    {#T, &cmeta_read_cmeta_##T},\
+    {#T, &cmeta_read_##T},\
+
+
+#define CMETA_FUNC_SET_DEC(_, T)\
+int	cmeta_set_##T(t_object *obj, const char *memname, T value);\
 
 /**
  * Function definition for setting a value based on the member name.
@@ -313,17 +344,16 @@ CMETA(T) CMETA_READ(T, const void *ptr, const char *memname, const struct meta_t
  * 0 - No error, the value is set.
  * 1 - Error, the member is not found
  * 2 - Error, the member don't have the given type
- * -1 - Error, a parameter is incorrect (NULL ptr/memname, or ptr not a cmeta compatible pointer)
+ * -1 - Error, a parameter is incorrect (NULL ptr/memname)
  */
-#define CMETA_FUNC_SET_DEF(d, T)\
-int CMETA_SET(T, const void *ptr, const char *memname, CMETA(T) new_value) {\
+#define CMETA_FUNC_SET_DEF(_, T)\
+int	cmeta_set_##T(t_object *obj, const char *memname, T new_value) {	\
     unsigned int i;\
-    const struct meta_struct *meta = (const struct meta_struct *)ptr;\
-    if (ptr && memname && cmeta_get_meta(&meta) == 1) {\
-        for (i = 0; i < meta->memCount; i++) {\
-            if (!strcmp(meta->members[i].name, memname)) {\
-                if (!strcmp(meta->members[i].type, #T)) {\
-                    *((CMETA(T) *)(((char *)ptr) + meta->members[i].offset)) = new_value;\
+    if (obj && memname) {\
+        for (i = 0; i < obj->meta->memCount; i++) {\
+            if (strcmp(obj->meta->members[i].name, memname) == 0) {\
+                if (strcmp(obj->meta->members[i].type, #T) == 0) {\
+                    *((T *)(((char *)obj) + obj->meta->members[i].offset)) = new_value;\
                     return 0;\
                 }\
                 return 2;\
@@ -335,13 +365,16 @@ int CMETA_SET(T, const void *ptr, const char *memname, CMETA(T) new_value) {\
 }
 
 #define CMETA_FUNC_SET_ASSOC_DEF(d, T)\
-    {#T, &cmeta_set_cmeta_##T},\
+    {#T, &cmeta_set_##T},\
 
 /**
  * Associations between cmeta types and related getter/setter functions
  */
 typedef struct {const char *type; const void *func;} cmeta_type_func_associations;
 extern const cmeta_type_func_associations cmeta_type_read_associations[];
+
+#define CMETA_FUNC_READ_DECLARE(...)\
+    FOR_EACH(CMETA_FUNC_READ_DEC, unused, __VA_ARGS__)
 
 #define CMETA_FUNC_READ_GEN(...)\
     FOR_EACH(CMETA_FUNC_READ_DEF, unused, __VA_ARGS__)\
@@ -350,11 +383,17 @@ extern const cmeta_type_func_associations cmeta_type_read_associations[];
     };
 
 extern const cmeta_type_func_associations cmeta_type_set_associations[];
+
+#define CMETA_FUNC_SET_DECLARE(...)\
+    FOR_EACH(CMETA_FUNC_SET_DEC, unused, __VA_ARGS__)
+
 #define CMETA_FUNC_SET_GEN(...)\
     FOR_EACH(CMETA_FUNC_SET_DEF, unused, __VA_ARGS__)\
     const cmeta_type_func_associations cmeta_type_set_associations[] = {\
         FOR_EACH(CMETA_FUNC_SET_ASSOC_DEF, unused, __VA_ARGS__)\
     };
 
+CMETA_FUNC_READ_DECLARE(CMETA_ALL_TYPES);
+CMETA_FUNC_SET_DECLARE(CMETA_ALL_TYPES);
 
 #endif /* !_CMETA_H_ */

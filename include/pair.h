@@ -1,7 +1,7 @@
 #ifndef PAIR_H_
 # define PAIR_H_
 
-# include "new.h"
+# include "object.h"
 
 # define MAGIC_t_pair DEFAULT_MAGIC
 

@@ -1,4 +1,4 @@
-NAME	= exception
+NAME	= introspection
 
 CC	= gcc
 
@@ -6,13 +6,10 @@ CFLAGS	+= -W -Wall -Wextra -I../../include -Wno-missing-field-initializers
 
 RM	= rm -f
 
-SRC	= main.c			\
-	  ../../src/exception_handler.c	\
-	  ../../src/event_exception.c	\
-	  ../../src/exception.c		\
-	  ../../src/object.c		\
-	  ../../src/list_modifiers.c	\
-	  ../../src/list_accessors.c
+SRC	= main.c				\
+	  intro.c				\
+	  ../../src/object.c	\
+	  ../../src/CMeta.c
 
 OBJ	= $(SRC:.c=.o)
 

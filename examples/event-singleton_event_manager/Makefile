@@ -13,7 +13,7 @@ SRC	= main.c			\
 	  ../../src/map_modifiers.c	\
 	  ../../src/map_accessors.c	\
 	  ../../src/pair.c		\
-	  ../../src/new.c
+	  ../../src/object.c
 
 OBJ	= $(SRC:.c=.o)
 

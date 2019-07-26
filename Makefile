@@ -7,7 +7,9 @@ event2 :
 exceptions :
 	make re -C examples/exception_handling
 
-
+introspection :
+	make re -C examples/introspection
+	
 event-clean :
 	make fclean -C examples/event-singleton_event_manager
 	
@@ -16,7 +18,10 @@ event2-clean :
 	
 exception-clean :
 	make fclean -C examples/exception_handling
+	
+introspection-clean :
+	make fclean -C examples/introspection
 
-all	: event event2 exceptions
+all	: event event2 exceptions introspection
 
-clean : event-clean event2-clean exception-clean
+clean : event-clean event2-clean exception-clean introspection-clean
