@@ -12,7 +12,9 @@ SRC	= main.c			\
 	  ../../src/exception.c		\
 	  ../../src/object.c		\
 	  ../../src/list_modifiers.c	\
-	  ../../src/list_accessors.c
+	  ../../src/list_accessors.c	\
+	  ../../src/cmeta.c
+	  
 
 OBJ	= $(SRC:.c=.o)
 
@@ -25,7 +27,7 @@ clean	:
 	$(RM) $(OBJ)
 
 fclean	: clean
-	$(RM) $(NAME)
+	$(RM) $(NAME) $(NAME).exe
 
 re	: fclean all
 

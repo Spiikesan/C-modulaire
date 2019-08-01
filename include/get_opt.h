@@ -3,7 +3,7 @@
 
 # include "opt_types.h"
 
-# include "new.h"
+# include "object.h"
 # include "vector.h"
 
 # define OPT_NOERR	(0)
@@ -14,8 +14,6 @@
 # define OPT_NOTSET	(5)
 # define OPT_MANDAT	(6)
 # define OPT_OPTERROR	(7)
-
-# define MAGIC_t_getopt DEFAULT_MAGIC
 
 typedef enum
   {
@@ -31,10 +29,6 @@ typedef enum
     N_OPT_TYPES = 3
   }	t_opt_type;
 
-typedef struct	s_getopt_init
-{
-}		t_getopt_init;
-
 typedef struct	s_opt_v
 {
   char		opt;
@@ -45,17 +39,15 @@ typedef struct	s_opt_v
   char		var[];
 }		t_opt_v;
 
-typedef struct	s_getopt
-{
-  t_object	__obj__;
-  t_vector	*opts;
-  char		*optstr;
-  size_t	n_set;
-  size_t	n_mandat;
-  size_t	mandat_found;
-}		t_getopt;
+# define t_getopt_DEFINITION\
+	t_getopt,				\
+	(t_pvector,	opts),		\
+	(pChar,	optstr),		\
+	(uLong,	n_set),			\
+	(uLong,	n_mandat),		\
+	(uLong,	mandat_found)
 
-t_getopt	*t_getopt_new(t_getopt_init var);
+CMETA_STRUCT_DEF(t_getopt_DEFINITION);
 
 int	opt_register(t_getopt *opt, char c, t_opt_type type, t_opt_par par);
 int	opt_getvar(t_getopt *opt, char c, void *var);

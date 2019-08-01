@@ -1,23 +1,26 @@
 #include "exception_handler.h"
 #include "raise.h"
 
-static void ExceptionHandler_del(void *self)
+static void ExceptionHandler_del(t_object *self)
 {
-  ExceptionHandler *this = self;
-  this->tab = NULL;
+  ExceptionHandler *this = (ExceptionHandler *)self;
+  delete(this->tab);
 }
 
-ExceptionHandler	*ExceptionHandler_new(__attribute__((unused)) ExceptionHandler_init var)
+CMETA_STRUCT_BUILD(ExceptionHandler_DEFINITION)
 {
-  ExceptionHandler	*this;
+  ExceptionHandler	*this = newObject(ExceptionHandler, &ExceptionHandler_del);
   int			i;
 
-  if ((this = newObject(ExceptionHandler, &ExceptionHandler_del)) == NULL)
-    return (NULL);
-  if ((this->tab = new(t_list)) == NULL)
-    return (NULL);
-  for (i = 0; i < MAX_EX; ++i)
-    LPUT(this->tab, new(EventException), 0);
+  (void) args;
+  if (this) {
+	  this->tab = new(t_list);
+	  if (this->tab) {
+		  for (i = 0; i < MAX_EX; ++i)
+			  LPUT(this->tab, new(EventException), 0);
+	  } else
+		  delete(this);
+  }
   return (this);
 }
 

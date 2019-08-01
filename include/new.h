@@ -8,7 +8,7 @@
  */
 # pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 
-typedef struct s_object t_object;
+typedef struct s_object t_object, *t_pobject;
 
 struct meta_struct;
 
@@ -26,14 +26,14 @@ typedef struct s_object_init {
 	func_str str;
 } t_object_init;
 
-typedef struct s_magic {
-	unsigned int obj;
+typedef struct s_reference {
+	unsigned int magic;
 	unsigned int type;
 	//unsigned int instance; //Is it really usefull ? can be used as references...
-} t_magic;
+} t_reference;
 
 struct s_object {
-	t_magic magic;
+	t_reference ref;
 	const struct meta_struct *meta;
 	t_object *next;
 	t_object *prev;
@@ -51,7 +51,7 @@ struct s_object {
 
 # define newObject(type, ...) (type *)new(t_object, sizeof(type), DEFAULT_MAGIC+1, &CMETA(type), ##__VA_ARGS__)
 
-# define delete(var) _delete((t_object *)var); var = NULL
+# define delete(var) {_delete((t_object *)var); var = NULL;}
 
 
 #endif /* !NEW_H_ */

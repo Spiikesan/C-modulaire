@@ -3,21 +3,13 @@
 
 # include "object.h"
 
-# define MAGIC_t_pair DEFAULT_MAGIC
+# define t_pair_DEFINITION	\
+	t_pair,					\
+	(Pointer, first),		\
+	(Pointer, second)
 
-typedef struct	s_pair_init
-{
-  void		*first;
-  void		*second;
-}		t_pair_init;
+CMETA_STRUCT_DEF(t_pair_DEFINITION);
 
-typedef struct	s_pair
-{
-  t_object	__obj__;
-  void		*first;
-  void		*second;
-}		t_pair;
-
-t_pair		*t_pair_new(t_pair_init var);
+typedef t_pair *t_ppair;
 
 #endif /* !PAIR_H_ */

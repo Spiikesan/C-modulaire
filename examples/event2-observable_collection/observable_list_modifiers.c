@@ -1,29 +1,31 @@
 #include <string.h>
 #include "observable_list.h"
 
-static void	observable_list_del(void *ptr)
+static void	observable_list_del(t_object *ptr)
 {
   t_observable_list	*l;
 
   if (!ptr)
     return ;
-  l = ptr;
-  free(l->list.array);
+  l = (t_observable_list *)ptr;
+  delete(l->list);
+  delete(l->em);
 }
 
-t_observable_list	*t_observable_list_new(t_observable_list_init var)
+CMETA_STRUCT_BUILD(t_observable_list_DEFINITION)
 {
-  t_observable_list	*l;
+  t_observable_list	*l = newObject(t_observable_list, &observable_list_del);
 
-  if ((l = newObject(t_observable_list, &observable_list_del)) == NULL)
-    return (NULL);
-  ++var.size;
-  if ((l->list.array = malloc(sizeof(void *) * var.size)) == NULL ||
-      (l->em = new(t_event_manager, 1)) == NULL)
-    return (NULL);
-  memset(l->list.array, 0, sizeof(void *) * var.size);
-  l->list.alloc = var.size;
-  l->list.size = 0;
+  (void)args;
+  if (l) {
+	  l->list = new(t_list);
+	  if (l->list) {
+	        l->em = new(t_event_manager, .direct=1);
+	        if (!l->em)
+	        	delete(l);
+	  } else
+		  delete(l);
+  }
   return (l);
 }
 
@@ -34,11 +36,11 @@ int		observable_list_add(t_observable_list *l, void *value, size_t index)
   p = new(t_pair, value, &index);
   raise_event(l->em, "add", (t_event_args)p);
   delete(p);
-  return (list_add((t_list *)l, value, index));
+  return (list_add(l->list, value, index));
 }
 
 int		observable_list_remove(t_observable_list *l, size_t index)
 {
   raise_event(l->em, "remove", (t_event_args)&index);
-  return (list_remove((t_list *)l, index));
+  return (list_remove(l->list, index));
 }

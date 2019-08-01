@@ -1,32 +1,35 @@
 #include <string.h>
 #include "circularBuff.h"
 
-void			cb_del(void *ptr)
+static void cb_del(t_object *ptr)
 {
   t_circularBuff	*c;
 
   if (!ptr)
     return ;
-  c = ptr;
+  c = (t_circularBuff*) ptr;
   free(c->array);
 }
 
-t_circularBuff	*t_circularBuff_new(t_circularBuff_init var)
+CMETA_STRUCT_BUILD(t_circularBuff_DEFINITION)
 {
-  t_circularBuff	*c;
+  t_circularBuff	*c = newObject(t_circularBuff, &cb_del);
 
-  if (var.size == 0)
-    return (NULL);
-  if ((c = newObject(t_circularBuff, &cb_del)) == NULL)
-    return (NULL);
-  if ((c->array = malloc(sizeof(void *) * (var.size + 1))) == NULL)
-    return (NULL);
-  memset(c->array, 0, sizeof(void *) * (var.size + 1));
-  c->size = var.size;
-  c->alloc = var.size + 1;
-  c->remain = var.size;
-  c->read = 0;
-  c->write = 0;
+  if (c) {
+	  if (args.size > 0) {
+		  c->array = malloc(sizeof(void *) * (args.size + 1));
+		  if (c->array) {
+			  memset(c->array, 0, sizeof(void *) * (args.size + 1));
+			  c->size = args.size;
+			  c->alloc = args.size + 1;
+			  c->remain = args.size;
+			  c->read = 0;
+			  c->write = 0;
+		  } else
+			  delete(c);
+	  } else
+		  delete(c);
+  }
   return (c);
 }
 

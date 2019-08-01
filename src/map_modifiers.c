@@ -1,32 +1,35 @@
 #include <string.h>
 #include "map.h"
 
-void	map_del(void *ptr)
+void	map_del(t_object *ptr)
 {
   t_map	*m;
 
   if (!ptr)
     return ;
-  m = ptr;
+  m = (t_map *)ptr;
   free(m->array);
 }
 
-t_map	*t_map_new(t_map_init var)
+CMETA_STRUCT_BUILD(t_map_DEFINITION)
 {
-  t_map	*m;
+  t_map	*m = newObject(t_map, &map_del);
 
-  if (!var.compar)
-    return (NULL);
-  if ((m = newObject(t_map, &map_del)) == NULL)
-    return (NULL);
-  ++var.size;
-  if ((m->array = malloc(sizeof(t_pair *) * var.size)) == NULL)
-    return (NULL);
-  memset(m->array, 0, sizeof(t_pair *) * var.size);
-  m->alloc = var.size;
-  m->size = 0;
-  m->compar = var.compar;
-  m->defVal = var.defVal;
+  if (m) {
+	  if (args.compar) {
+		  ++args.size;
+		  m->array = malloc(sizeof(t_ppair) * args.size);
+		  if (m->array) {
+			  memset(m->array, 0, sizeof(t_ppair) * args.size);
+			  m->alloc = args.size;
+			  m->size = 0;
+			  m->compar = args.compar;
+			  m->defaultValue = args.defaultValue;
+		  } else
+			  delete(m);
+	  } else
+		  delete(m);
+  }
   return (m);
 }
 
@@ -49,7 +52,7 @@ int		map_add(t_map *m, void *key, void *value)
     return (MAP_ARGS);
   if (m->size >= m->alloc - 1)
     if ((m->array = realloc(m->array,
-			    (++m->alloc) * sizeof(t_pair *))) == NULL)
+			    (++m->alloc) * sizeof(t_ppair))) == NULL)
       return (MAP_FUNC);
   ++(m->size);
   m->array[(m->size) - 1] = new(t_pair);

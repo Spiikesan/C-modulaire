@@ -1,4 +1,4 @@
-NAME	= events2
+NAME	= binary_options
 
 CC	= gcc
 
@@ -7,16 +7,11 @@ CFLAGS	+= -W -Wall -Wextra -I../../include -std=gnu99 -g3 -Wno-missing-field-ini
 RM	= rm -f
 
 SRC	= main.c			\
-	  observable_list_modifiers.c	\
-	  observable_list_accessors.c	\
-	  observable_list_events.c	\
-	  ../../src/event_manager.c	\
-	  ../../src/list_modifiers.c	\
-	  ../../src/list_accessors.c	\
-	  ../../src/map_modifiers.c	\
-	  ../../src/map_accessors.c	\
-	  ../../src/pair.c		\
+	  ../../src/get_opt.c		\
+	  ../../src/opt_types.c		\
 	  ../../src/object.c	\
+	  ../../src/vector_modifiers.c \
+	  ../../src/vector_accessors.c \
 	  ../../src/cmeta.c
 
 OBJ	= $(SRC:.c=.o)

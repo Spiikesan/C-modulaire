@@ -38,11 +38,11 @@ const char *const cmeta_type_print_associations[][2] = {
     {"Pointer",     "%p"}
 };
 
-static void cmeta_print_type(const t_object *obj, unsigned int typeId)
+static void cmeta_print_type(const struct meta_struct *meta, unsigned int typeId)
 {
-	if (obj && typeId < obj->meta->memCount)
+	if (meta && typeId < meta->memCount)
 		printf(" - Member %d: '%s' of type '%s'. The type size is %u bytes and the struct offset is %u bytes.\n",
-				typeId, obj->meta->members[typeId].name, obj->meta->members[typeId].type, obj->meta->members[typeId].size, obj->meta->members[typeId].offset);
+				typeId, meta->members[typeId].name, meta->members[typeId].type, meta->members[typeId].size, meta->members[typeId].offset);
 }
 
 static void cmeta_print_value(const t_object *obj, unsigned int typeId)
@@ -61,9 +61,9 @@ static void cmeta_print_value(const t_object *obj, unsigned int typeId)
 			fprintf(stderr, "Undefined type : '%s' for member '%s.%s'.\n", obj->meta->members[typeId].type, OBJ_NAME(obj), obj->meta->members[typeId].name);
 		else
 		{
-			if (!strcmp(cmeta_type_print_associations[i][0], "float"))
+			if (!strcmp(cmeta_type_print_associations[i][0], "Float"))
 				printf(val, *((float *)(((char *)obj) + obj->meta->members[typeId].offset)));
-			else if (!strcmp(cmeta_type_print_associations[i][0], "double"))
+			else if (!strcmp(cmeta_type_print_associations[i][0], "Double"))
 				printf(val, *((double *)(((char *)obj) + obj->meta->members[typeId].offset)));
 			else
 				printf(val, *((size_t *)(((char *)obj) + obj->meta->members[typeId].offset)));
@@ -82,7 +82,7 @@ void cmeta_print_types(const t_object *obj)
     	meta = obj->meta;
 		printf("Object '%s' has %u Members :\n", OBJ_NAME(obj), meta->memCount);
 		for (i = 0; i < meta->memCount; i++) {
-			cmeta_print_type(obj, i);
+			cmeta_print_type(obj->meta, i);
 			cmeta_print_value(obj, i);
 		}
     }

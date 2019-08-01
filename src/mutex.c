@@ -18,7 +18,7 @@ int	cmutex_lock(t_cmutex *ptr_mutex)
 #ifdef __linux__
   return (pthread_mutex_lock(ptr_mutex));
 #elif _WIN32
-  WaitForSingleObject(ptr_mutex);
+  WaitForSingleObject(ptr_mutex, INFINITE);
   return (0);
 #endif
 }
@@ -28,7 +28,7 @@ int	cmutex_unlock(t_cmutex *ptr_mutex)
 #ifdef __linux__
   return (pthread_mutex_unlock(ptr_mutex));
 #elif _WIN32
-  if (Release(*ptr_mutex))
+  if (ReleaseMutex(*ptr_mutex))
     return (0);
   return (1);
 #endif

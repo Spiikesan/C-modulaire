@@ -20,27 +20,19 @@ typedef struct	s_cthread
 typedef DWORD t_cth_ret;
 typedef LPVOID t_cth_params;
 
-
 # endif
 
-# include "new.h"
+typedef t_cth_ret	(*t_thread_routine)(t_cth_params);
 
-# define MAGIC_t_thread DEFAULT_MAGIC
+# include "object.h"
 
-typedef struct	s_thread_init
-{
-  t_cth_ret	(*routine)(t_cth_params);
-  t_cth_params	params;
-  t_cth_ret	ret;
-}		t_thread_init;
+# define t_thread_DEFINITION	\
+	t_thread,					\
+	(t_thread_routine, routine),\
+	(t_cth_params, params),		\
+	(t_cth_ret,	ret),			\
+	(t_cthread,	thread)			\
 
-typedef struct	s_thread
-{
-  t_object	__obj__;
-  t_cth_ret	ret;
-  t_cthread	thread;
-}		t_thread;
-
-t_thread	*t_thread_new(t_thread_init var);
+CMETA_STRUCT_DEF(t_thread_DEFINITION);
 
 #endif /* !THREAD_H_ */

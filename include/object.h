@@ -2,7 +2,7 @@
 # define OBJECT_H_
 
 # include "new.h"
-# include "CMeta.h"
+# include "cmeta.h"
 
 /*
 ** Get the object substruct

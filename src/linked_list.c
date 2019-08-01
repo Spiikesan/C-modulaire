@@ -1,6 +1,7 @@
 #include "linked_list.h"
+#include <stdlib.h>
 
-static void _del_ll(void *ptr)
+static void _del_ll(t_object *ptr)
 {
   t_linked_list	*self;
 
@@ -43,18 +44,12 @@ static inline void	_unlink_elem(t_ll_elem *a)
   a->next->prev = a->prev;
 }
 
-t_linked_list	*t_linked_list_new(t_linked_list_init var)
+CMETA_STRUCT_BUILD(t_linked_list_DEFINITION)
 {
-  t_linked_list	*l;
+  t_linked_list	*l = newObject(t_linked_list, _del_ll);
 
-  if ((l = newObject(t_linked_list, _del_ll)) == NULL)
-    return (NULL);
-  l->elem = _make_elem(var.elem);
-  if (var.other) {
-    if (tll_merge_lists(l, var.other) == -1) {
-      delete(l);
-      return (NULL);
-    }
+  if (l) {
+	  l->elem = args.elem;
   }
   return (l);
 }
@@ -69,7 +64,7 @@ int	tll_add_elem(t_linked_list *l, void *elem)
   return (0);
 }
 
-void	*tll_rem_elem(t_linked_list *l, void *elem, int (*comp)(void *a, void *b))
+void	*tll_rem_elem(t_linked_list *l, const void *elem, int (*comp)(const void *a, const void *b))
 {
   t_ll_elem	*e;
   void		*f;
@@ -87,7 +82,7 @@ void	*tll_rem_elem(t_linked_list *l, void *elem, int (*comp)(void *a, void *b))
   return (f);
 }
 
-void	*tll_get_elem(t_linked_list *l, void *elem, int (*comp)(void *a, void *b))
+void	*tll_get_elem(t_linked_list *l, const void *elem, int (*comp)(const void *a, const void *b))
 {
   t_ll_elem	*e;
 
@@ -101,9 +96,12 @@ void	*tll_get_elem(t_linked_list *l, void *elem, int (*comp)(void *a, void *b))
   return (NULL);
 }
 
-int	tll_merge_lists(t_linked_list *la, t_linked_list *lb)
+int	tll_merge_lists(t_linked_list *la, const t_linked_list *lb)
 {
-  (void)la;
-  (void)lb;
+  t_ll_pelem e;
+
+  for (e = lb->elem->next; e != lb->elem; e = e->next) {
+      tll_add_elem(la, e->elem);
+  }
   return (0);
 }

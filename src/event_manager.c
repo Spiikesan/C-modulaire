@@ -1,7 +1,8 @@
-#include <string.h>
-#include <stdio.h>
 #include "event_manager.h"
 #include "foreach.h"
+#include "pair.h"
+#include <string.h>
+#include <stdio.h>
 
 void t_event_delete(t_object *ptr)
 {
@@ -10,22 +11,12 @@ void t_event_delete(t_object *ptr)
 	if (ptr)
 	{
 		man = (t_event_manager *)ptr;
-		/*FOREACH(t_pair *, p, man->events,
+		FOREACH(t_pair *, p, man->events,
 		{
 			//we have strdup'ed the event name
 			free(p->first);
 			p->first = NULL;
-		});*/
-		{
-			t_pair * *_cur_11 = (*(t_pair * **)((void *)man->events + sizeof(t_object) + sizeof(size_t)));
-			for (t_pair *  p = *_cur_11;
-					_cur_11 != ((*(t_pair * **)((void *)man->events + sizeof(t_object) + sizeof(size_t))) + *((size_t *)(((void *)man->events) + sizeof(t_object))));
-					p = *(++_cur_11)) {
-				//we have strdup'ed the event name
-				free(p->first);
-				p->first = ((void *)0);
-			}
-		}
+		});
 	}
 }
 
@@ -48,7 +39,7 @@ CMETA_STRUCT_BUILD(t_event_manager_DEFINITION)
 	obj = newObject(t_event_manager, t_event_delete);
 	if (obj) {
 		obj->direct = args.direct;
-		obj->events = new(t_map, str_compar);
+		obj->events = new(t_map, .compar=str_compar);
 		obj->events_raised = new(t_list);
 		if (obj->events == NULL || obj->events_raised == NULL)
 			delete(obj);
@@ -83,21 +74,31 @@ static int	_detach_handler(t_event_manager *em, const char *event_name,
 
 	if (!em || !event_name || !handler)
 		return (EM_PARAM);
-	if ((l = MGET(t_list *, em->events, event_name)) == NULL)
+	if ((l = MGET(t_plist, em->events, event_name)) == NULL)
 		return (EM_NOERR);
 	if ((idx = list_search_index(l, handler)) == (size_t)-1)
 		return (EM_NOERR);
 	LPOP(l, idx);
 	if (l->size == 0)
 	{
-		FOREACH(t_pair *, p, em->events,
+		/*FOREACH(t_pair *, p, em->events,
 			{
 			//we have strdup'ed the event name
 			if (!em->events->compar(p->first, event_name)) {
 				tmp = p->first;
 				break;
 			}
-		});
+		});*/
+		{ t_pair * *_cur_14 = (*(t_pair * **)((char *)em->events + sizeof(t_object) + sizeof(uLong)));
+		for (t_pair *  p = *_cur_14;
+				_cur_14 != ((*(t_pair * **)((char *)em->events + sizeof(t_object) + sizeof(uLong))) + *((uLong *)(((char *)em->events) + sizeof(t_object))));
+				p = *(++_cur_14)) {
+					//we have strdup'ed the event name
+					if (!em->events->compar(p->first, event_name)) {
+						tmp = p->first;
+						break;
+					}
+				}; }
 		map_remove(em->events, event_name);
 		free(tmp);
 	}
@@ -189,7 +190,7 @@ int	raise_event(t_event_manager *em, const char *event_name,
 
 void	process_events(t_event_manager *em)
 {
-	if (em && em->is_direct)
+	if (em && em->direct)
 		fprintf(stderr, "Warning: calling process_event() is useless if event_manager is in direct mode.\n");
 	_process_events(em);
 }

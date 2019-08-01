@@ -1,13 +1,5 @@
 #include <stdlib.h>
 #include "pair.h"
 
-t_pair		*t_pair_new(t_pair_init var)
-{
-  t_pair	*p;
-
-  if ((p = newObject(t_pair)) == NULL)
-    return (NULL);
-  p->first = var.first;
-  p->second = var.second;
-  return (p);
-}
+CMETA_STRUCT_BUILD(t_pair_DEFINITION)
+CMETA_DEFAULT_BUILD(t_pair_DEFINITION)

@@ -10,6 +10,7 @@
 ** new/delete
 */
 # include "object.h"
+# include "foreach.h"
 
 /*
 ** Define de configuration
@@ -30,24 +31,15 @@
 # define LPUT(list, elem, idx) (list_add(list, (void *)elem, idx))
 # define LPOP(list, idx) (list_remove(list, idx))
 
-/*
-** Utilisé pour le new (initialisation).
-*/
-typedef struct	s_list_init
-{
-  size_t	size;
-}		t_list_init;
+# define t_list_DEFINITION	\
+	t_list,					\
+	CONTAINER_ELEMENTS,		\
+	(uLong, alloc)
 
-typedef struct	s_list
-{
-  t_object	__obj__;
-  size_t	size;
-  void		**array;
-  size_t	alloc;
-}		t_list;
+CMETA_STRUCT_DEF(t_list_DEFINITION);
 
-t_list	*t_list_new(t_list_init var);
-void	list_del(void *ptr);
+typedef t_list  *t_plist;
+
 size_t	list_size(const t_list *l);
 int	list_add(t_list *l, void *value, size_t index);
 int	list_remove(t_list *l, size_t index);

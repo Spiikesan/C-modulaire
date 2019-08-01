@@ -18,7 +18,7 @@ void	event2_callback(t_event_args arg)
 int main()
 {
   /* It's mandatory to call the new once, to init the "direct" behaviour */
-  new(t_event_manager, 0);
+  new(t_event_manager, .direct=0);
 
   printf("Attaching first_event to the event_callback function\n");
   attach_handler("first_event", event_callback);

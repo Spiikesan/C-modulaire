@@ -1,7 +1,7 @@
 #ifndef VARARGS_H_
 # define VARARGS_H_
 
-# include "new.h"
+# include "object.h"
 
 # define MAX_ARGS (10)
 
@@ -42,7 +42,7 @@ struct boolean_s;
     default: break;                                                                     \
     }
 
-union type_u
+typedef union type_u
 {
     int type_int, *type_pint;
     long int type_long_int, *type_plong_int;
@@ -50,53 +50,29 @@ union type_u
     void *type_ptr;
     char *type_str, **type_pstr;
     struct boolean_s *type_bool, **type_pbool;
-};
+}		type_u_array[MAX_ARGS];
 
-struct s_segment
+typedef struct s_segment
 {
        enum type_e _type;
        union type_u _value;
-};
+}				t_segment_array[MAX_ARGS];
 
-typedef struct	s_varargs_init
-{
-	const char *fmt;
-    union type_u values[MAX_ARGS];
-}		t_varargs_init;
+# define t_varargs_DEFINITON	\
+	t_varargs,					\
+	(pChar, fmt),				\
+	(type_u_array, values),		\
+	(uInt, count),				\
+	(t_segment_array, segments)
 
-typedef struct  varargs_s
-{
-	t_object	__obj__;
-    int count;
-    struct s_segment segments[MAX_ARGS];
-}               t_varargs, *varargs;
+CMETA_STRUCT_DEF(t_varargs_DEFINITON);
 
-/**
- * Create a variadic argument list.
- * The fmt is the format used for types arguments. The
- * syntax is :
- *      ([1-9][0-9]*)? : count of items, followed by :
- *      i : int
- *      l : long
- *      d : double
- *      p : ptr
- * it's always followed by a semicolon ';', even if there is one type. Pointer variants
- * can be specified with a 'p' in front of thirds first types.
- * example "i;pl;p;" for (int, long *, void *) arguments.
- * char and short arguments are automatically promoted to int.
- * float argument is promoted to double.
- */
-t_varargs *t_varargs_new(t_varargs_init var);
+typedef t_varargs *varargs;
 
 /**
  * Idem, but use the provided arg, that will be erased.
  */
 varargs varargs_create_fromVar(t_varargs *args, char *fmt, ...);
-
-/**
- * Call this function to delete the built varargs if it's not from existing (stack) one.
- */
-void varargs_delete(varargs var);
 
 /**
  * Push an argument of the specified type into the list.

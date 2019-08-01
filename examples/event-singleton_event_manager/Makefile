@@ -13,7 +13,8 @@ SRC	= main.c			\
 	  ../../src/map_modifiers.c	\
 	  ../../src/map_accessors.c	\
 	  ../../src/pair.c		\
-	  ../../src/object.c
+	  ../../src/object.c	\
+	  ../../src/cmeta.c
 
 OBJ	= $(SRC:.c=.o)
 
@@ -26,7 +27,7 @@ clean	:
 	$(RM) $(OBJ)
 
 fclean	: clean
-	$(RM) $(NAME)
+	$(RM) $(NAME) $(NAME).exe
 
 re	: fclean all
 

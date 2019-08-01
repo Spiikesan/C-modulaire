@@ -14,5 +14,5 @@ void		*map_get(const t_map *m, const void *key)
       if (m->array[i] && !m->compar(key, m->array[i]->first))
 	return (m->array[i]->second);
     }
-  return (m->defVal);
+  return (m->defaultValue);
 }

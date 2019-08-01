@@ -14,7 +14,8 @@
 /*
 ** new/delete
 */
-# include "new.h"
+# include "object.h"
+# include "foreach.h"
 
 /*
 ** Define de configuration
@@ -39,27 +40,15 @@
 # define VSET(type, vec, index, elem) (VGET(type, vec, index) = elem)
 # define VSETP(vec, index, elem) (vector_set(vec, index, (void *)elem))
 
-/*
-** Utilisé pour le new (initialisation).
-*/
-typedef struct	s_vector_init
-{
-  size_t	size;
-}		t_vector_init;
+# define t_vector_DEFINITION	\
+	t_vector,					\
+	CONTAINER_ELEMENTS,			\
+	(uLong, alloc)
 
-typedef struct	s_vector
-{
-  t_object	__obj__;
-  size_t	size;
-  void		**array;
-  size_t	alloc;
-}		t_vector;
+CMETA_STRUCT_DEF(t_vector_DEFINITION);
 
-/*
-** vector_modifiers.c
-*/
-t_vector	*t_vector_new(t_vector_init var);
-void		vec_del(void *v);
+typedef t_vector *t_pvector;
+
 int		vector_push_back(t_vector *v, void *elem);
 int		vector_pop_back(t_vector *v);
 int		vector_set(t_vector *v, size_t index, void *elem);

@@ -34,33 +34,24 @@
 /*
 ** Ce n'est pas une fonction car le type n'est pas récupérable autrement.
 */
-# define MGET(type, map, key) ((type)(map_get(map, key)))
+# define MGET(type, map, key) ((type)(map_get((t_map *)map, key)))
 
-/*
-** Utilisé pour le new (initialisation).
-** La fonction de comparaison est obligatoire, même si la map
-** est une unordered map. (nécéssaire pour check keys)
-** defVal is the default value.
-*/
-typedef struct	s_map_init
-{
-  int		(*compar)(const void *a, const void *b);
-  size_t	size;
-  void		*defVal;
-}		t_map_init;
+typedef int		(*t_compar_func)(const void *a, const void *b);
 
-typedef struct	s_map
-{
-  t_object	__obj__;
-  size_t	size;
-  t_pair	**array;
-  size_t	alloc;
-  int		(*compar)(const void *a, const void*b);
-  void		*defVal;
-}		t_map;
+typedef t_ppair *t_ppairArray;
 
-t_map	*t_map_new(t_map_init var);
-void	map_del(void *ptr);
+# define t_map_DEFINITION		\
+	t_map,						\
+	(uLong, size),				\
+	(t_ppairArray, array),		\
+	(t_compar_func, compar),	\
+	(Pointer, defaultValue),	\
+	(uLong, alloc)
+
+CMETA_STRUCT_DEF(t_map_DEFINITION);
+
+typedef t_map *t_pmap;
+
 size_t	map_size(const t_map *m);
 int	map_add(t_map *m, void *key, void *value);
 int	map_remove(t_map *m, const void *key);

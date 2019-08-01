@@ -4,7 +4,7 @@
 #include <ctype.h>
 #include "varargs.h"
 
-static inline union type_u _nativeType_getValue(va_list *vl, enum type_e type, int ptr)
+static inline union type_u _nativeType_getValue(va_list *vl, enum type_e type, __attribute__((unused))int ptr)
 {
     switch (type) {
     case TYPE_E_INT: return (union type_u)va_arg(*vl, int);
@@ -89,17 +89,8 @@ static void _varargs_build(varargs args, char *fmt, va_list *vl, union type_u *v
     }
 }
 
-t_varargs *t_varargs_new(t_varargs_init var)
-{
-    varargs args;
-
-    if ((args = newObject(t_varargs)) == NULL)
-    	return NULL;
-    if (var.fmt && *var.fmt) {
-    	_varargs_build(args, var.fmt, NULL, var.values);
-    }
-    return args;
-}
+CMETA_STRUCT_BUILD(t_varargs_DEFINITON)
+CMETA_DEFAULT_BUILD(t_varargs_DEFINITON)
 
 varargs varargs_create_fromVar(varargs args, char *fmt, ...)
 {

@@ -1,28 +1,31 @@
 #include <string.h>
 #include "list.h"
 
-void	list_del(t_object *ptr)
+static void	list_del(t_object *ptr)
 {
   t_list	*l;
 
   if (!ptr)
     return ;
-  l = ptr;
+  l = (t_list *)ptr;
   free(l->array);
 }
 
-t_list	*t_list_new(t_list_init var)
+CMETA_STRUCT_BUILD(t_list_DEFINITION)
 {
-  t_list	*l;
+  t_list	*l = newObject(t_list, &list_del);
 
-  if ((l = newObject(t_list, &list_del)) == NULL)
-    return (NULL);
-  ++var.size;
-  if ((l->array = malloc(sizeof(void *) * var.size)) == NULL)
-    return (NULL);
-  memset(l->array, 0, sizeof(void *) * var.size);
-  l->alloc = var.size;
-  l->size = 0;
+  if (l) {
+	  args.size++;
+	  l->array = malloc(sizeof(void *) * args.size);
+	  if (l->array) {
+		  memset(l->array, 0, sizeof(void *) * args.size);
+		  l->alloc = args.size;
+		  l->size = 0;
+	  } else {
+		  delete(l);
+	  }
+  }
   return (l);
 }
 

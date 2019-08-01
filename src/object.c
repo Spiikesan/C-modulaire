@@ -64,8 +64,8 @@ t_object	*t_object_new(t_object_init var)
       atexit(clean_at_exit);
       first = 0;
     };
-  new->magic.obj = OBJECT_MAGIC;
-  new->magic.type = var.type_magic;
+  new->ref.magic = OBJECT_MAGIC;
+  new->ref.type = var.type_magic;
   new->meta = var.meta;
   new->del = var.del;
   new->to_str = var.str;

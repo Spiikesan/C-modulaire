@@ -2,6 +2,7 @@
 # define _CMETA_H_
 
 # include <stddef.h>
+# include <string.h>
 
 //# include "new.h"
 
@@ -22,20 +23,6 @@
  * a one word type.
  */
 #define CMETA_STRUCT_DEF(...) CMETA_STRUCT_DEF_(__VA_ARGS__)
-
-/*
- * get the meta structure name
- */
-#define CMETA(type) CMETA1(type)
-#define CMETA1(type) cmeta_##type
-
-#define STRINGIZE(arg)  STRINGIZE1(arg)
-#define STRINGIZE1(arg) STRINGIZE2(arg)
-#define STRINGIZE2(arg) #arg
-
-#define CONCATENATE(arg1, arg2)   CONCATENATE1(arg1, arg2)
-#define CONCATENATE1(arg1, arg2)  CONCATENATE2(arg1, arg2)
-#define CONCATENATE2(arg1, arg2)  arg1##arg2
 
 /**
  * You must call this macro with the previous #define MY_STRUCT_DEF as parameter IN A .C file to build the constant metadata structure.
@@ -61,6 +48,20 @@
 #define CMETA_STRUCT_BUILD(...) CMETA_STRUCT_BUILD_(__VA_ARGS__)
 
 #define CMETA_DEFAULT_BUILD(...) CMETA_DEFAULT_BUILD_(__VA_ARGS__)
+
+/*
+ * get the meta structure name
+ */
+#define CMETA(type) CMETA1(type)
+#define CMETA1(type) cmeta_##type
+
+#define STRINGIZE(arg)  STRINGIZE1(arg)
+#define STRINGIZE1(arg) STRINGIZE2(arg)
+#define STRINGIZE2(arg) #arg
+
+#define CONCATENATE(arg1, arg2)   CONCATENATE1(arg1, arg2)
+#define CONCATENATE1(arg1, arg2)  CONCATENATE2(arg1, arg2)
+#define CONCATENATE2(arg1, arg2)  arg1##arg2
 
 /**
  * Init metadata structure by assigning &CMETA(my_struct) to te meta member.
@@ -230,7 +231,7 @@ extern const char * const cmeta_type_print_associations[][2];
 /**
  * Apply a macro to each elements from X to the 32'nd element, called as what(d, curent_element)
  */
-#define FOR_EACH(what, d, x, ...) FOR_EACH_(FOR_EACH_NARG(x, __VA_ARGS__), what, d, x, __VA_ARGS__)
+#define FOR_EACH(what, d, x, ...) FOR_EACH_(FOR_EACH_NARG(x, ##__VA_ARGS__), what, d, x, ##__VA_ARGS__)
 
 /**
  * Count up to 16 varargs parameters.
@@ -250,14 +251,13 @@ extern const char * const cmeta_type_print_associations[][2];
 #define CMETA_TYPE_BUILD1_(type, params) CMETA_TYPE_BUILD1(type, params)
 #define CMETA_TYPE_BUILD1__(type, params) CMETA_TYPE_BUILD1_(type, DEPLOY(PARAMERISE, params))
 
-#define CMETA_INIT_BUILD(_, name)  obj->name = args.name;\
+#define CMETA_INIT_BUILD(_, name)  memcpy(&obj->name, &args.name, sizeof(args.name));\
 
 #define CMETA_INIT_BUILD_(_, params)  DEPLOY(CMETA_INIT_BUILD, params) //_ == unused
 
 
 /*
- * This function is used in place of addSymbol function
- * for idempotence.
+ * This function is used in place of addSymbol function for idempotence.
  */
 void cmeta_do_nothing();
 
@@ -306,37 +306,37 @@ name	*name##_new(name##_init args)
     return (obj);									\
 }
 
-#define CMETA_FUNC_READ_DEC(_, T)\
-T cmeta_read_##T(const t_object *obj, const char *memname, const struct meta_type **metatype);\
+#define CMETA_FUNC_READ_DEC(_, T)													\
+T cmeta_read_##T(const t_object *obj, const char *memname, const struct meta_type **metatype);	\
 
 /**
  * Function definition for getting a value based on the member name
  */
-#define CMETA_FUNC_READ_DEF(_, T)\
-T cmeta_read_##T(const t_object *obj, const char *memname, const struct meta_type **metatype) {\
-    unsigned int i;\
-    if (obj && memname) {\
-        for (i = 0; i < obj->meta->memCount; i++) {\
-            if (strcmp(obj->meta->members[i].name, memname) == 0) {\
-                if (strcmp(obj->meta->members[i].type, #T) == 0) {\
-                    if (metatype)\
-                        *metatype = &obj->meta->members[i];\
-                    return *((T *)(((char *)obj) + obj->meta->members[i].offset));\
-                }\
-            }\
-        }\
-    }\
-    if (metatype)\
-        *metatype = NULL;\
-    return (T)0;\
+#define CMETA_FUNC_READ_DEF(_, T)													\
+T cmeta_read_##T(const t_object *obj, const char *memname, const struct meta_type **metatype) {	\
+    unsigned int i;																	\
+    if (obj && memname) {															\
+        for (i = 0; i < obj->meta->memCount; i++) {									\
+            if (strcmp(obj->meta->members[i].name, memname) == 0) {					\
+                if (strcmp(obj->meta->members[i].type, #T) == 0) {					\
+                    if (metatype)													\
+                        *metatype = &obj->meta->members[i];							\
+                    return *((T *)(((char *)obj) + obj->meta->members[i].offset));	\
+                }																	\
+            }																		\
+        }																			\
+    }																				\
+    if (metatype)																	\
+        *metatype = NULL;															\
+    return (T)0;																	\
 }
 
-#define CMETA_FUNC_READ_ASSOC_DEF(d, T)\
-    {#T, &cmeta_read_##T},\
+#define CMETA_FUNC_READ_ASSOC_DEF(d, T)	\
+    {#T, &cmeta_read_##T},				\
 
 
-#define CMETA_FUNC_SET_DEC(_, T)\
-int	cmeta_set_##T(t_object *obj, const char *memname, T value);\
+#define CMETA_FUNC_SET_DEC(_, T)								\
+int	cmeta_set_##T(t_object *obj, const char *memname, T value);	\
 
 /**
  * Function definition for setting a value based on the member name.
@@ -346,26 +346,26 @@ int	cmeta_set_##T(t_object *obj, const char *memname, T value);\
  * 2 - Error, the member don't have the given type
  * -1 - Error, a parameter is incorrect (NULL ptr/memname)
  */
-#define CMETA_FUNC_SET_DEF(_, T)\
+#define CMETA_FUNC_SET_DEF(_, T)										\
 int	cmeta_set_##T(t_object *obj, const char *memname, T new_value) {	\
-    unsigned int i;\
-    if (obj && memname) {\
-        for (i = 0; i < obj->meta->memCount; i++) {\
-            if (strcmp(obj->meta->members[i].name, memname) == 0) {\
-                if (strcmp(obj->meta->members[i].type, #T) == 0) {\
-                    *((T *)(((char *)obj) + obj->meta->members[i].offset)) = new_value;\
-                    return 0;\
-                }\
-                return 2;\
-            }\
-        }\
-        return 1;\
-    }\
-    return -1;\
+    unsigned int i;														\
+    if (obj && memname) {												\
+        for (i = 0; i < obj->meta->memCount; i++) {						\
+            if (strcmp(obj->meta->members[i].name, memname) == 0) {		\
+                if (strcmp(obj->meta->members[i].type, #T) == 0) {		\
+                    *((T *)(((char *)obj) + obj->meta->members[i].offset)) = new_value;	\
+                    return 0;											\
+                }														\
+                return 2;												\
+            }															\
+        }																\
+        return 1;														\
+    }																	\
+    return -1;															\
 }
 
-#define CMETA_FUNC_SET_ASSOC_DEF(d, T)\
-    {#T, &cmeta_set_##T},\
+#define CMETA_FUNC_SET_ASSOC_DEF(d, T)	\
+    {#T, &cmeta_set_##T},				\
 
 /**
  * Associations between cmeta types and related getter/setter functions
@@ -373,24 +373,24 @@ int	cmeta_set_##T(t_object *obj, const char *memname, T new_value) {	\
 typedef struct {const char *type; const void *func;} cmeta_type_func_associations;
 extern const cmeta_type_func_associations cmeta_type_read_associations[];
 
-#define CMETA_FUNC_READ_DECLARE(...)\
+#define CMETA_FUNC_READ_DECLARE(...)					\
     FOR_EACH(CMETA_FUNC_READ_DEC, unused, __VA_ARGS__)
 
-#define CMETA_FUNC_READ_GEN(...)\
-    FOR_EACH(CMETA_FUNC_READ_DEF, unused, __VA_ARGS__)\
-    const cmeta_type_func_associations cmeta_type_read_associations[] = {\
-        FOR_EACH(CMETA_FUNC_READ_ASSOC_DEF, unused, __VA_ARGS__)\
+#define CMETA_FUNC_READ_GEN(...)											\
+    FOR_EACH(CMETA_FUNC_READ_DEF, unused, __VA_ARGS__)						\
+    const cmeta_type_func_associations cmeta_type_read_associations[] = {	\
+        FOR_EACH(CMETA_FUNC_READ_ASSOC_DEF, unused, __VA_ARGS__)			\
     };
 
 extern const cmeta_type_func_associations cmeta_type_set_associations[];
 
-#define CMETA_FUNC_SET_DECLARE(...)\
+#define CMETA_FUNC_SET_DECLARE(...)						\
     FOR_EACH(CMETA_FUNC_SET_DEC, unused, __VA_ARGS__)
 
-#define CMETA_FUNC_SET_GEN(...)\
-    FOR_EACH(CMETA_FUNC_SET_DEF, unused, __VA_ARGS__)\
-    const cmeta_type_func_associations cmeta_type_set_associations[] = {\
-        FOR_EACH(CMETA_FUNC_SET_ASSOC_DEF, unused, __VA_ARGS__)\
+#define CMETA_FUNC_SET_GEN(...)												\
+    FOR_EACH(CMETA_FUNC_SET_DEF, unused, __VA_ARGS__)						\
+    const cmeta_type_func_associations cmeta_type_set_associations[] = {	\
+        FOR_EACH(CMETA_FUNC_SET_ASSOC_DEF, unused, __VA_ARGS__)				\
     };
 
 CMETA_FUNC_READ_DECLARE(CMETA_ALL_TYPES);

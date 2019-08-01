@@ -39,11 +39,9 @@ int main()
   printf("j'insert a l'index 1 : 'phrase 2'\n");
   OLPUT(ol, "phrase 2", 1);
 
-  printf("Taille de la liste : %lu\n", (long unsigned int)ol->list.size);
+  printf("Taille de la liste : %lu\n", (long unsigned int)ol->list->size);
 
-  FOREACH(char *, ph, ol,
-	  printf("FOREACH: %s\n", ph);
-  );
+  FOREACH(char *, ph, ol->list, printf("FOREACH: %s\n", ph));
 
   printf("je recup a l'index 1 : %s\n", OLGET(char *, ol, 1));
 
@@ -54,7 +52,7 @@ int main()
   printf("je supprime à l'index 0\n");
   OLPOP(ol, 0);
 
-  printf("Taille de la liste : %lu\n", (long unsigned int)ol->list.size);
+  printf("Taille de la liste : %lu\n", (long unsigned int)ol->list->size);
 
   //Not necessary (presence of a garbage collector)
   delete(ol);

@@ -28,30 +28,31 @@ fontfamily=Monospaced
     <id>UMLClass</id>
     <coordinates>
       <x>360</x>
-      <y>105</y>
-      <w>240</w>
+      <y>660</y>
+      <w>405</w>
       <h>165</h>
     </coordinates>
     <panel_attributes>t_object
 --
-t_magic    magic;
+t_reference    ref;
+const struct meta_struct *meta;
 t_object   *next;
 t_object   *prev;
 del_func   del;
-str_func   to_str;
-const char *name;</panel_attributes>
+str_func   to_str;</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>150</x>
-      <y>495</y>
+      <x>30</x>
+      <y>855</y>
       <w>510</w>
-      <h>90</h>
+      <h>105</h>
     </coordinates>
     <panel_attributes>meta_struct
 --
+const char *name;
 const unsigned int memCount;
 const struct meta_type const members[];</panel_attributes>
     <additional_attributes/>
@@ -59,122 +60,61 @@ const struct meta_type const members[];</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>285</x>
-      <y>255</y>
-      <w>165</w>
-      <h>105</h>
+      <x>300</x>
+      <y>720</y>
+      <w>90</w>
+      <h>165</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>40.0;10.0;10.0;10.0;10.0;90.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>690</x>
+      <y>810</y>
+      <w>45</w>
+      <h>75</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>90.0;10.0;90.0;30.0;10.0;30.0;10.0;50.0</additional_attributes>
+    <additional_attributes>10.0;10.0;10.0;30.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>495</x>
-      <y>330</y>
-      <w>270</w>
-      <h>75</h>
+      <x>570</x>
+      <y>855</y>
+      <w>195</w>
+      <h>105</h>
     </coordinates>
     <panel_attributes>MyObject
 --
-... Others fields...</panel_attributes>
+.Others fields.</panel_attributes>
     <additional_attributes/>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>510</x>
-      <y>255</y>
-      <w>150</w>
-      <h>105</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;30.0;80.0;30.0;80.0;50.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>915</x>
-      <y>225</y>
+      <x>30</x>
+      <y>735</y>
       <w>270</w>
-      <h>195</h>
-    </coordinates>
-    <panel_attributes>CResulting_Object
---
-t_magic    magic;
-t_object   *next;
-t_object   *prev;
-del_func   del;
-str_func   to_str;
-const char *name;
-... Others Fields...</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>750</x>
-      <y>360</y>
-      <w>195</w>
-      <h>45</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>110.0;10.0;10.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>750</x>
-      <y>435</y>
-      <w>435</w>
-      <h>210</h>
-    </coordinates>
-    <panel_attributes>CResulting_MyIntrospectibleObject
---
-t_magic           magic;
-t_object          *next;
-t_object          *prev;
-del_func          del;
-str_func          to_str;
-const char        *name;
-const meta_struct *meta;
-... Others Fields...</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>405</x>
-      <y>405</y>
-      <w>375</w>
-      <h>195</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>230.0;110.0;200.0;110.0;200.0;40.0;10.0;40.0;10.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>150</x>
-      <y>330</y>
-      <w>315</w>
       <h>90</h>
     </coordinates>
-    <panel_attributes>MyIntrospectibleObject
+    <panel_attributes>t_reference
 --
-const meta_struct *meta;
-... Others Fields...</panel_attributes>
+unsigned int magic
+unsigned int type</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>180</x>
-      <y>405</y>
-      <w>45</w>
-      <h>120</h>
+      <x>150</x>
+      <y>690</y>
+      <w>240</w>
+      <h>75</h>
     </coordinates>
-    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;60.0</additional_attributes>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>140.0;10.0;10.0;10.0;10.0;30.0</additional_attributes>
   </element>
 </diagram>

@@ -15,8 +15,6 @@
 
 typedef void *t_event_args;
 typedef void (*t_event_handler)(t_event_args args);
-typedef t_map *t_pmap;
-typedef t_list *t_plist;
 
 /*
 ** direct == true(1) => events are directly processed
@@ -38,6 +36,8 @@ typedef t_list *t_plist;
 		(t_plist,	events_raised)
 
 CMETA_STRUCT_DEF(t_event_manager_DEFINITION);
+
+typedef t_event_manager *t_pevent_manager;
 
 # ifdef EVENT_SINGLETON
 

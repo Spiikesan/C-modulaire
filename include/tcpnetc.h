@@ -14,22 +14,15 @@ typedef struct in_addr IN_ADDR;
 #  include <winsock2.h>
 # endif
 
-# include "new.h"
+# include "object.h"
 
-# define MAGIC_t_tcpnetc DEFAULT_MAGIC
+# define t_tcpnetc_DEFINITION	\
+	t_tcpnetc,					\
+	(pChar, host),				\
+	(uShort, port),				\
+	(SOCKET, socket)
 
-typedef struct	s_tcpnetc_init
-{
-  char		*host;
-  int		port;
-}		t_tcpnetc_init;
 
-typedef struct	s_tcpnetc
-{
-  t_object	__obj__;
-  SOCKET	socket;
-}		t_tcpnetc;
-
-t_tcpnetc		*t_tcpnetc_new(t_tcpnetc_init var);
+CMETA_STRUCT_DEF(t_tcpnetc_DEFINITION);
 
 #endif /* !TCPNETC_H_ */

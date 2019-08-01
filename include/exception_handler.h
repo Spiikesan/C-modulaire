@@ -3,29 +3,20 @@
 
 # include <stdio.h>
 # include <setjmp.h>
-# include "new.h"
+# include "object.h"
 # include "list.h"
 # include "event_exception.h"
 
 #define JMP_BUFF_INIT	(jmp_buff)({{{0}, 0, {{0}}}})
 
-# define MAGIC_ExceptionHandler DEFAULT_MAGIC
-
 /* Max number of levels of exceptions */
 #define MAX_EX 10
 
-typedef struct	s_ExceptionHandler
-{
-  t_object	__obj__;
-  t_list	*tab;
-}		ExceptionHandler;
+# define ExceptionHandler_DEFINITION	\
+	ExceptionHandler,			\
+	(t_plist, tab)
 
-typedef struct	s_ExceptionHandler_init
-{
-
-}		ExceptionHandler_init;
-
-ExceptionHandler	*ExceptionHandler_new(ExceptionHandler_init var);
+CMETA_STRUCT_DEF(ExceptionHandler_DEFINITION);
 
 jmp_buf			*ExceptionHandler_try(ExceptionHandler *this,
 					      size_t id);

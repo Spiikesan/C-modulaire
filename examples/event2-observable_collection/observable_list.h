@@ -38,18 +38,12 @@ typedef enum {
   OL_POP
 } observable_list_event_type;
 
-/*
-** Utilisé pour le new (initialisation).
-*/
-typedef	t_list_init	t_observable_list_init;
+# define t_observable_list_DEFINITION	\
+	t_observable_list,					\
+	(t_plist, list),					\
+	(t_pevent_manager, em)
 
-typedef struct s_observable_list
-{
-  t_list		list;
-  t_event_manager	*em;
-}	t_observable_list;
-
-t_observable_list	*t_observable_list_new(t_observable_list_init var);
+CMETA_STRUCT_DEF(t_observable_list_DEFINITION);
 
 int	observable_list_add(t_observable_list *l, void *value, size_t index);
 int	observable_list_remove(t_observable_list *l, size_t index);
